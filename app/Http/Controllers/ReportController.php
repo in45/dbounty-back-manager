@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Program;
 use App\Models\Report;
 use Illuminate\Http\Request;
 
@@ -18,12 +19,13 @@ class ReportController extends Controller
     }
       public function getProgramReports($id)
     {
-        return Report::with(['user','vuln','program'])->where('prog_id',$id)->get();
+        return Report::with(['user','vuln','program'])->where('prog_id',$id)->paginate(6);
     }
 
        public function getCompanyReports($id)
     {
-        return Report::with(['user','vuln','program'])->where('company_id',$id)->get();
+        $programs =  Program::where('company_id',$id)->pluck('id')->toArray();
+        return Report::with(['user','vuln','program'])->whereIn('prog_id',$programs)->paginate(6);
     }
 
        public function getUserReports($user_id)
