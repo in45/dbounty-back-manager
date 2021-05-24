@@ -46,6 +46,7 @@ Route::post('companies/{id}/code', [CompanyController::class, 'generate']);
 Route::get('companies/{id}/managers', [CompanyController::class, 'getManagers']);
 Route::post('companies/{id}/reports', [ReportController::class, 'getCompanyReports']);
 Route::post('programs/{id}/reports', [ReportController::class, 'getProgramReports']);
+Route::post('companies/{id}/invite_manager', [ManagerController::class, 'inviteManager']);
 Route::post('companies/{id}/managers', [CompanyController::class, 'addManager']);
 Route::post('managers/{user_id}', [ManagerController::class, 'changeRole']);
 Route::get('programs/{id}', [ProgramController::class, 'show']);
