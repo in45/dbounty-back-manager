@@ -17,16 +17,34 @@ class ReportController extends Controller
     {
         return Report::findOrFail($id);
     }
-      public function getProgramReports($id)
+    public function getProgramReports(Request $request,$id)
     {
-        return Report::with(['user','vuln','program'])->where('prog_id',$id)->paginate(6);
+        $status = $request->input('status');
+        $type = $request->input('type');
+        $manager_address = '0x03Rcd5gluv8lVQoxgp6pfJS1qbevtWRJYJYtP0qm';
+        if(!$type) {
+        
+            return Report::with(['user', 'vuln', 'program'])->where('prog_id',$id)->where('status', 'like', $status . '%')->paginate(6);
+        }
+        else  return Report::with(['user','vuln','program'])->where('prog_id',$id)->where('status', 'like', $status . '%')->where('assigned_to_manager',$manager_address)->paginate(6);
+    
     }
 
-       public function getCompanyReports($id)
+    public function getCompanyReports(Request $request,$id)
     {
-        $programs =  Program::where('company_id',$id)->pluck('id')->toArray();
-        return Report::with(['user','vuln','program'])->whereIn('prog_id',$programs)->paginate(6);
+        $status = $request->input('status');
+        $type = $request->input('type');
+        $manager_address = '0x03Rcd5gluv8lVQoxgp6pfJS1qbevtWRJYJYtP0qm';
+        if(!$type) {
+            $programs = Program::where('company_id', $id)->pluck('id')->toArray();
+            return Report::with(['user', 'vuln', 'program'])->whereIn('prog_id', $programs)->where('status', 'like', $status . '%')->paginate(6);
+        }
+        else  return Report::with(['user','vuln','program'])->where('status', 'like', $status . '%')->where('assigned_to_manager',$manager_address)->paginate(6);
     }
+
+
+
+
 
        public function getUserReports($user_id)
     {
