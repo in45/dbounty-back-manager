@@ -72,7 +72,7 @@ class ReportController extends Controller
         return $report;
     }
 
-    public function update(Request $request,$id)
+    public function update(Request $request,$company_id,$id)
     {
         $report = Report::findOrFail($id);
         if($request->input('target')) $report->target = $request->input('target');

@@ -51,7 +51,6 @@ Route::post('companies/{id}/managers', [CompanyController::class, 'addManager'])
 Route::post('managers/{user_id}', [ManagerController::class, 'changeRole']);
 Route::get('programs/{id}', [ProgramController::class, 'show']);
 Route::get('programs/{id}/users', [ProgramController::class, 'getUsers']);
-Route::get('programs/{id}/reports', [ReportController::class, 'getProgramReports']);
 Route::post('programs', [ProgramController::class, 'store']);
 Route::post('programs/{id}', [ProgramController::class, 'update']);
-Route::post('reports/{id}', [ReportController::class, 'update']);
+Route::post('companies/{company_id}/reports/{id}', [ReportController::class, 'update']);
