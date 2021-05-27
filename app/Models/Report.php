@@ -23,10 +23,10 @@ class Report extends Model
     {
         return Carbon::parse($this->created_at)->diffForHumans();
     }
-    
+
     public function user()
     {
-        return $this->hasOne('App\Models\User','public_address','user_address');
+        return $this->hasOne('App\Models\User','id','user_id');
     }
      public function program()
     {

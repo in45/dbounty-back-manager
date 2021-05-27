@@ -2,28 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Manager;
+use Illuminate\Support\Facades\Auth;
 use App\Mail\InviteManager;
 use App\Models\Company;
-use App\Models\Manager;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+
 
 class ManagerController extends Controller
 {
-    public function show()
+     public function login(Request $request)
     {
-        $id = '0x03Rcd5gluv8lVQoxgp6pfJS1qbevtWRJYJYtP0qm';
-        return Manager::with('company.company')->findOrFail($id);
-    }
-    public function changeRole(Request $request,$user_id){
-        $manager= Manager::findOrFail($user_id);
-        $manager->role = $request->input('role');
-        $manager->save();
-        return $manager;
+        $credentials = $request->only(['email', 'password']);
+
+        if (!$token = auth()->attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        return response()->json([
+            'token'=>$this->respondWithToken($token),
+            'manager'=> Auth::user()->load('company')
+        ]);
     }
 
-    public function inviteManager(Request $request,$id){
-        $company= Company::findOrFail($id);
+    protected function respondWithToken($token)
+    {
+        return [
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ];
+    }
+    public function register(Request $request)
+    {
+        $manager = new Manager();
+        $manager->email = $request->input('email');
+        $manager->password = bcrypt($request->input('password'));
+        $manager->save();
+        $token = auth()->attempt(['email'=>$manager->email,'password'=>$request->input('password')]);
+        return $this->respondWithToken($token);
+    }
+    public function me(){
+        return  Auth::user();
+
+    }
+
+
+    public function changeRole(Request $request,$user_id){
+       $manager= Manager::findOrFail($user_id);
+         $manager->role = $request->input('role');
+         $manager->save();
+         return $manager;
+     }
+ 
+    public function inviteManager(Request $request){
+        $company= Company::findOrFail(Auth::user()->company_id);
         $role = $request->input('manager_role');
         $email = $request->input('manager_email');
         $company = $company->makeVisible(['alpha_code', 'beta_code']);

@@ -8,19 +8,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
     use SoftDeletes;
-    protected $primaryKey = 'public_address';
     protected static function boot()
     {
         parent::boot();
         static::addGlobalScope(new OrderScope('created_at', 'desc'));
+        static::creating(function ($post) {
+            $post->{$post->getKeyName()} = (string) Str::uuid();
+        });
 
     }
+
 
     /**
      * The attributes that are mass assignable.
@@ -58,27 +63,42 @@ class User extends Authenticatable
     {
         return 'string';
     }
-      public function reports()
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
     {
-        return $this->hasMany('App\Models\Report','user_address','public_address');
+        return [];
+    }
+
+    public function reports()
+    {
+        return $this->hasMany('App\Models\Report','user_id','id');
     }
     public function programs()
     {
-        return $this->hasMany('App\Models\ProgramUser','user_address','public_address');
+        return $this->hasMany('App\Models\ProgramUser','user_id','id');
     }
      public function getCountReportsAttribute()
     {
-       
+
         return count($this->reports);
     }
       public function getCountProgramsAttribute()
     {
-       
+
         return count($this->programs);
     }
        public function getThanksAttribute()
     {
-     
+
         return count($this->programs()->where('thanks',1)->get());
+    }
+
+    public function getJWTIdentifier()
+    {
+       return  $this->getKey();
     }
 }

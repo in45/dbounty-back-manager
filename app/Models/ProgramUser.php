@@ -17,10 +17,10 @@ class ProgramUser extends Model
         static::addGlobalScope(new OrderScope('created_at', 'desc'));
 
     }
-    
+
     public function user()
     {
-        return $this->hasOne('App\Models\User','public_address','user_address');
+        return $this->hasOne('App\Models\User','id','user_id');
     }
      public function program()
     {

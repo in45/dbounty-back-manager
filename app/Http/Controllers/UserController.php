@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
+use function Symfony\Component\Translation\t;
 
 class UserController extends Controller
 {
@@ -20,14 +24,19 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $user = new User();
-        if($request->input('public_address')) $user->public_address = $request->input('public_address');
+        $user->email = $request->input('email');
+        $user->password = bcrypt($request->input('password'));
+      if($request->input('public_address')) $user->public_address = $request->input('public_address');
       if($request->input('username')) $user->username = $request->input('username');
-      if($request->input('email')) $user->email = $request->input('email');
       if($request->input('country')) $user->country = $request->input('country');
-        if($request->file('avatar')) $user->avatar = $request->file('avatar')->storeAs('users', $request->avatar->getClientOriginalName(), 'public');
-     
+      if($request->file('avatar')) $user->avatar = $request->file('avatar')->storeAs('users', $request->avatar->getClientOriginalName(), 'public');
+
         $user->save();
-        return $user;
+        $token = auth()->attempt(['email'=>$user->email,'password'=>$request->input('password')]);
+        return response()->json([
+            'token'=>$this->respondWithToken($token),
+            'admin'=> $user
+        ]);
     }
 
     public function update(Request $request,$user_id)
@@ -38,7 +47,7 @@ class UserController extends Controller
       if($request->input('email')) $user->email = $request->input('email');
       if($request->input('country')) $user->country = $request->input('country');
         if($request->file('avatar')) $user->avatar = $request->file('avatar')->storeAs('users', $request->avatar->getClientOriginalName(), 'public');
-     
+
         $user->save();
         return $user;
     }
@@ -55,4 +64,6 @@ class UserController extends Controller
         $user->save();
         return $user;
     }
+
+
 }

@@ -6,6 +6,7 @@ use App\Scopes\OrderScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Company extends Model
 {
@@ -31,9 +32,8 @@ class Company extends Model
 
     public function getIsManagerAttribute()
     {
-        //$user = Auth::user();
-        $id = '1';
-        $managers = $this->managers->pluck('manager_address')->toArray();
-        return in_array($id, $managers);
+        $user = Auth::user();
+        $managers = $this->managers->pluck('manager_id')->toArray();
+        return in_array($user->id, $managers);
     }
 }

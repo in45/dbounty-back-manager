@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
+use App\Models\Report;
 use App\Models\ProgramUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramController extends Controller
 {
@@ -18,9 +20,9 @@ class ProgramController extends Controller
         return Program::with('company')->where('id',$id)->withCount(['reports','users'])->first();;
     }
 
-     public function getCompanyPrograms($id)
+     public function getCompanyPrograms()
     {
-        return Program::where('company_id',$id)->withCount(['reports','users'])->paginate(6);
+        return Program::where('company_id',Auth::user()->company_id)->withCount(['reports','users'])->paginate(6);
     }
       public function getUserPrograms($user_id)
     {
@@ -37,7 +39,7 @@ class ProgramController extends Controller
 
         $program = new Program();
         $program->name = $request->input('name');
-        $program->company_id = '27';
+         $program->company_id =  Auth::user()->company_id;
         if($request->input('type')) $program->type = $request->input('type');
         if($request->file('logo')) $program->logo = $request->file('logo')->storeAs('programs', $request->logo->getClientOriginalName(), 'public');
         if($request->input('min_bounty')) $program->min_bounty = $request->input('min_bounty');
@@ -63,8 +65,7 @@ class ProgramController extends Controller
     public function update(Request $request,$id)
     {
         $program = Program::findOrFail($id);
-        $program->name = $request->input('name');
-        $program->company_id = '27';
+        if($request->input('name')) $program->name = $request->input('name');
         if($request->input('type')) $program->type = $request->input('type');
         if($request->file('logo')) $program->logo = $request->file('logo')->storeAs('programs', $request->logo->getClientOriginalName(), 'public');
         if($request->input('min_bounty')) $program->min_bounty = $request->input('min_bounty');
@@ -87,17 +88,17 @@ class ProgramController extends Controller
         $program->save();
         return $program;
     }
-    public function destroy($id)
+    public function destroy()
     {
-        $program = Program::findOrfail($id);
+        $program = Program::findOrfail(Auth::user()->company_id);
         if($program->delete()) return  true;
         return "Error while deleting";
     }
 
-    public function searchProgram(Request $request,$id)
+    public function searchProgram(Request $request)
     {
 
         $name = $request->input('name');
-        return Program::where('name', 'like', $name . '%')->where('company_id',$id)->withCount(['reports','users'])->paginate(6);;
+        return Program::where('name', 'like', $name . '%')->where('company_id',Auth::user()->company_id)->withCount(['reports','users'])->paginate(6);;
     }
 }

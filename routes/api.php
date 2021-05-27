@@ -21,36 +21,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::pattern('user_id', '0x[0-9a-zA-Z]{40}');
+Route::pattern('user_id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}');
 
-
-
-
+//API For Users
+Route::post('login', [ManagerController::class, 'login']);
+Route::post('register', [ManagerController::class, 'register']);
+Route::group(['middleware' => ['is.auth']], function() {
+    Route::get('me', [ManagerController::class, 'me']);
+});
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 
-Route::get('companies/{id}/programs_status', [StatController::class, 'getProgramsStatus']);//status_prog_count
-Route::get('companies/{id}/programs_stats', [StatController::class, 'getProgramsStats']);//prog stats
-Route::get('companies/{id}/bounty_stats', [StatController::class, 'CompanyBounty']); //bounty evolution
-Route::get('companies/{id}/reports_stats', [StatController::class, 'getCompanyReportsStats']);//reports status_count and severity_count
-Route::get('companies/{id}/programs', [ProgramController::class, 'getCompanyPrograms']);
-Route::post('companies/{id}/programs/search', [ProgramController::class, 'searchProgram']);
+Route::get('programs_status', [StatController::class, 'getProgramsStatus']);//status_prog_count
+Route::get('programs_stats', [StatController::class, 'getProgramsStats']);//prog stats
+Route::get('bounty_stats', [StatController::class, 'CompanyBounty']); //bounty evolution
+Route::get('reports_stats', [StatController::class, 'getCompanyReportsStats']);//reports status_count and severity_count
+Route::get('programs', [ProgramController::class, 'getCompanyPrograms']);
+Route::post('programs/search', [ProgramController::class, 'searchProgram']);
 
-Route::get('me', [ManagerController::class, 'show']);
-Route::get('companies/{id}', [CompanyController::class, 'show']);
-Route::post('companies/{id}', [CompanyController::class, 'update']);
-Route::post('companies/{id}/code', [CompanyController::class, 'generate']);
-Route::get('companies/{id}/managers', [CompanyController::class, 'getManagers']);
-Route::post('companies/{id}/reports', [ReportController::class, 'getCompanyReports']);
+Route::get('company', [CompanyController::class, 'show']);
+Route::post('company', [CompanyController::class, 'update']);
+Route::post('code', [CompanyController::class, 'generate']);
+Route::get('managers', [CompanyController::class, 'getManagers']);
+Route::post('reports', [ReportController::class, 'getCompanyReports']);
 Route::post('programs/{id}/reports', [ReportController::class, 'getProgramReports']);
-Route::post('companies/{id}/invite_manager', [ManagerController::class, 'inviteManager']);
-Route::post('companies/{id}/managers', [CompanyController::class, 'addManager']);
+Route::post('invite_manager', [ManagerController::class, 'inviteManager']);
+Route::post('managers', [CompanyController::class, 'addManager']);
 Route::post('managers/{user_id}', [ManagerController::class, 'changeRole']);
 Route::get('programs/{id}', [ProgramController::class, 'show']);
 Route::get('programs/{id}/users', [ProgramController::class, 'getUsers']);
 Route::post('programs', [ProgramController::class, 'store']);
 Route::post('programs/{id}', [ProgramController::class, 'update']);
-Route::post('companies/{company_id}/reports/{id}', [ReportController::class, 'update']);
+Route::post('reports/{id}', [ReportController::class, 'update']);
