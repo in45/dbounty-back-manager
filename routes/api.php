@@ -7,6 +7,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StatController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReportMessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,3 +57,6 @@ Route::get('programs/{id}/users', [ProgramController::class, 'getUsers']);
 Route::post('programs', [ProgramController::class, 'store']);
 Route::post('programs/{id}', [ProgramController::class, 'update']);
 Route::post('reports/{id}', [ReportController::class, 'update']);
+Route::get('me/messages', [ReportMessageController::class, 'getMessages']);
+Route::post('reports/{id}/messages', [ReportMessageController::class, 'store']);
+Route::get('reports/{id}/messages', [ReportMessageController::class, 'getReportMessages']);
