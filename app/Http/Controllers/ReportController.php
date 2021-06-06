@@ -36,11 +36,13 @@ class ReportController extends Controller
     {
         $status = $request->input('status');
         $type = $request->input('type');
-        $manager_id = Auth::user()->id;
+        $manager = Auth::user()->load('company');
+        $programs =  Program::where('company_id',$manager->company_id)->pluck('id')->toArray();
+        $reports = Report::with(['user','vuln','program'])->whereIn('prog_id',$programs)->where('status', 'like', $status . '%');
         if(!$type) {
             return $reports->paginate(6);
         }
-        else  return $reports->where('type','saved')->paginate(6);
+        else  return $reports->where('assigned_to_manager',$manager->id)->paginate(6);
      
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Mail\InviteManager;
 use App\Models\Company;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 
 
 class ManagerController extends Controller
@@ -43,7 +44,7 @@ class ManagerController extends Controller
         return $this->respondWithToken($token);
     }
     public function me(){
-        return  Auth::user();
+        return  Auth::user()->load('company');
 
     }
 
@@ -59,16 +60,18 @@ class ManagerController extends Controller
         $company= Company::findOrFail(Auth::user()->company_id);
         $role = $request->input('manager_role');
         $email = $request->input('manager_email');
-        $company = $company->makeVisible(['alpha_code', 'beta_code']);
-        $code = '';
-        if($role == 'sysalpha')  $code = $company->alpha_code;
-        if($role == 'sysbeta')  $code = $company->beta_code;
-        $url = url('/companies/'.$company->id.'?email='.$email.',code='.$code);
+        $password = substr(strtoupper(Str::random(12)),0,-1);
+        $manager = new Manager();
+        $manager->username = 'Manager-'.substr(strtoupper(Str::random(4)),0,-1);
+        $manager->email = $request->input('email');
+        $manager->role = $role;
+        $manager->password = bcrypt($password);
+        $manager->save();
         $details = [
-            'user' => 'inas hasnaoui',
+            'email' => $email,
+            'password' => $password,
             'role' => $role,
             'company' => $company->name,
-            'url'=>$url
         ];
         Mail::to($email)->send(new inviteManager($details));
         return true;

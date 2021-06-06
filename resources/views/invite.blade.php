@@ -131,30 +131,19 @@
 
 
                                             <h2 style="font-family: Whitney, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;font-weight: 500;font-size: 20px;color: #4F545C;letter-spacing: 0.27px;">
-                                                You are invited by {{$details["user"]}} to be a {{$details["role"]}}
-                                                manager , to Company {{$details["company"]}}!</h2>
-                                            <p>to be a company manager,you should accept this invitation .</p>
+                                            Congratulations, Your have become  a  {{$details["role"]}} manager to the company  {{$details["company"]}}!</h2>
+                                                <h6>We Created a Manager Account For You ,There is your credentials  :</h6>
+                                                <ul>
+                                                    <li>Email : {{$details["email"]}}</li>
+                                                    <li>Password : {{$details["password"]}}</li>
+                                                </ul> 
+                                                <a href="http://www.dbounty.com/manager" target="_blank">click here to manage your company in DBounty Plateform</a>
+
 
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td style="word-break:break-word;font-size:0px;padding:10px 25px;" align="center">
-                                        <table role="presentation" cellpadding="0" cellspacing="0"
-                                               style="border-collapse:separate;" align="center" border="0">
-                                            <tbody>
-                                            <tr>
-                                                <td style="border:none;border-radius:3px;color:white;cursor:auto;padding:15px 19px;"
-                                                    align="center" valign="middle" bgcolor="#32394e"><a href="{{$details["url"]}}"
-                                                                                                        style="text-decoration:none;line-height:100%;background:#32394e;color:white;font-family:Ubuntu, Helvetica, Arial, sans-serif;font-size:15px;font-weight:normal;text-transform:none;margin:0px;"
-                                                                                                        target="_blank">
-                                                        Accept invitation
-                                                    </a></td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
+                             
                                 </tbody>
                             </table>
                         </div>
