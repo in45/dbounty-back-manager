@@ -63,7 +63,8 @@ class ManagerController extends Controller
         $password = substr(strtoupper(Str::random(12)),0,-1);
         $manager = new Manager();
         $manager->username = 'Manager-'.substr(strtoupper(Str::random(4)),0,-1);
-        $manager->email = $request->input('email');
+        $manager->email = $email;
+        $manager->public_address = "";
         $manager->role = $role;
         $manager->password = bcrypt($password);
         $manager->save();
