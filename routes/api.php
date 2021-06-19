@@ -60,3 +60,4 @@ Route::post('reports/{id}', [ReportController::class, 'update']);
 Route::get('me/messages', [ReportMessageController::class, 'getMessages']);
 Route::post('reports/{id}/messages', [ReportMessageController::class, 'store']);
 Route::get('reports/{id}/messages', [ReportMessageController::class, 'getReportMessages']);
+Route::post('reports/{id}/assign', [ReportController::class, 'assigne']);

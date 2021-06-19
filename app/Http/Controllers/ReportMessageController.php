@@ -41,4 +41,5 @@ class ReportMessageController extends Controller
         return $message;
         
     }
+  
 }

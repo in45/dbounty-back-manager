@@ -98,4 +98,11 @@ class ReportController extends Controller
         if($report->delete()) return  true;
         return "Error while deleting";
     }
+
+    public function assigne(Request $request,$id){
+          $report = Report::findOrFail($id);
+          $report->assigned_to_manager = $request->input('manager_id');
+          $report->save();
+          return $report;
+    }
 }
