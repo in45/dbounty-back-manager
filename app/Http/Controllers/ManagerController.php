@@ -7,6 +7,7 @@ use App\Models\Manager;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\InviteManager;
 use App\Models\Company;
+use App\Models\CompanyManager;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -57,7 +58,8 @@ class ManagerController extends Controller
      }
  
     public function inviteManager(Request $request){
-        $company= Company::findOrFail(Auth::user()->company_id);
+        $company_id = Auth::user()->company_id;
+        $company= Company::findOrFail($company_id);
         $role = $request->input('manager_role');
         $email = $request->input('manager_email');
         $password = substr(strtoupper(Str::random(12)),0,-1);
@@ -74,8 +76,12 @@ class ManagerController extends Controller
             'role' => $role,
             'company' => $company->name,
         ];
+        $cm = new CompanyManager();
+        $cm->company_id = $company_id;
+        $cm->manager_id = $manager->id;
+        $cm->save();
         Mail::to($email)->send(new inviteManager($details));
-        return true;
+        return $manager;
     }
 
 }

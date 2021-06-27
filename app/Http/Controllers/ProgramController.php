@@ -44,6 +44,7 @@ class ProgramController extends Controller
         if($request->file('logo')) $program->logo = $request->file('logo')->storeAs('programs', $request->logo->getClientOriginalName(), 'public');
         if($request->input('min_bounty')) $program->min_bounty = $request->input('min_bounty');
         if($request->input('max_bounty')) $program->max_bounty = $request->input('max_bounty');
+        if($request->input('managed_by_dbounty') == 0 || $request->input('managed_by_dbounty') == 1) $program->managed_by_dbounty = $request->input('managed_by_dbounty');
         if($request->input('begin_at')) $program->begin_at = $request->input('begin_at');
         if($request->input('finish_at')) $program->finish_at = $request->input('finish_at');
         if($request->input('range_response')) $program->range_response = $request->input('range_response');
