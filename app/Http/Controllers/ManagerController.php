@@ -48,6 +48,15 @@ class ManagerController extends Controller
         return  Auth::user()->load('company');
 
     }
+    public function edit(Request $request)
+    {
+        $manager = Manager::findOrFail(Auth::user()->id);
+        if($request->input('first_name'))$manager->first_name = $request->input('first_name');
+        if($request->input('last_name'))$manager->last_name = $request->input('first_name');
+        if($request->input('email'))$manager->email = $request->input('email');
+        $manager->save();
+        return $manager;
+    }
 
 
     public function changeRole(Request $request,$user_id){

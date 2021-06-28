@@ -26,6 +26,7 @@ Route::pattern('user_id', '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a
 
 //API For Users
 Route::post('login', [ManagerController::class, 'login']);
+Route::post('edit', [ManagerController::class, 'edit']);
 Route::post('register', [ManagerController::class, 'register']);
 Route::group(['middleware' => ['is.auth']], function() {
     Route::get('me', [ManagerController::class, 'me']);
